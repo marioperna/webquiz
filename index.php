@@ -19,6 +19,7 @@
     ?>
   </div>
   <div id="mostraRisposte">
+    <div id="rispDate"></div>
     <input type="checkbox" name="r[]" id="r1" value=""><label id="lab_r1"></label> <br>
     <input type="checkbox" name="r[]" id="r2" value=""><label id="lab_r2"></label>  <br>
     <input type="checkbox" name="r[]" id="r3" value=""><label id="lab_r3"></label>  <br>
@@ -30,7 +31,7 @@
   function leggiDom(a)
   {
     //var  domCliccata = $(this).attr('id');
-    alert(a);
+    //alert(a);
     $.ajax
     ({
       type: "POST",
@@ -53,12 +54,62 @@
 
         var rispDate = dati.rispDate[1].split(",");
 
-        //alert(rispDate);
-        // (uno,due) (uno)
-        /*
-        if(dati.risposte[0].includes(rispDate[0]))
-        {$("#r1").prop('checked', true);}else{$("#r1").prop('checked', false)};
-        */
+        $("#r1").prop('checked', false);
+        $("#r2").prop('checked', false);
+        $("#r3").prop('checked', false);
+        $("#r4").prop('checked', false);
+
+        if(dati.risposte[0]== rispDate[0])
+        {$("#r1").prop('checked', true);}
+
+        if(dati.risposte[1] == rispDate[0])
+        {$("#r2").prop('checked', true);}
+
+        if(dati.risposte[2]== rispDate[0])
+        {$("#r3").prop('checked', true);}
+
+        if(dati.risposte[3]== rispDate[0])
+        {$("#r4").prop('checked', true);}
+
+        ////////////////////////////////////risposte date 2
+        if(dati.risposte[0]== rispDate[1])
+        {$("#r1").prop('checked', true);}
+
+        if(dati.risposte[1] == rispDate[1])
+        {$("#r2").prop('checked', true);}
+
+        if(dati.risposte[2]== rispDate[1])
+        {$("#r3").prop('checked', true);}
+
+        if(dati.risposte[3]== rispDate[1])
+        {$("#r4").prop('checked', true);}
+        /////////////////////////////////////////////////////////
+        ////////////////////////////////////risposte date 3
+        if(dati.risposte[0]== rispDate[2])
+        {$("#r1").prop('checked', true);}
+
+        if(dati.risposte[1] == rispDate[2])
+        {$("#r2").prop('checked', true);}
+
+        if(dati.risposte[2]== rispDate[2])
+        {$("#r3").prop('checked', true);}
+
+        if(dati.risposte[3]== rispDate[2])
+        {$("#r4").prop('checked', true);}
+        /////////////////////////////////////////////////////////
+        ////////////////////////////////////risposte date 4
+        if(dati.risposte[0]== rispDate[3])
+        {$("#r1").prop('checked', true);}
+
+        if(dati.risposte[1] == rispDate[3])
+        {$("#r2").prop('checked', true);}
+
+        if(dati.risposte[2]== rispDate[3])
+        {$("#r3").prop('checked', true);}
+
+        if(dati.risposte[3]== rispDate[3])
+        {$("#r4").prop('checked', true);}
+        /////////////////////////////////////////////////////////
 
 
 
@@ -175,7 +226,7 @@
 
       }
 
-      
+
       ///
     });
   });
