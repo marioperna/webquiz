@@ -5,14 +5,14 @@ $chiavePrivata="ß@h/9#02'+a!(DkÄ.";
 
 //la  variabile st contiene lo stato della chiamata 
 
-$st ="controlloPwd";//$_POST["stato"];
+$st = $_POST["stato"];
 //$st = "controlloSblocco";$ct =  "9pjbTfjcQxtUlf";
 
 switch ($st) {
     case "controlloPwd":
-            $pwd = 123;//$_POST["password"];
+            $pwd =$_POST["password"];
 			$pwd = str_replace("'", "", $pwd);
-        	$cPwd = "SELECT wu.cognome,wu.nome,wu.testAssegnato,wc.titolo,wc.id,wu.stato FROM _webquizUtenti wu, _webquizCat wc
+        	$cPwd = "SELECT wu.idUtente, wu.cognome,wu.nome,wu.testAssegnato,wc.titolo,wc.id,wu.stato FROM _webquizUtenti wu, _webquizCat wc
   		     		 WHERE wu.pwd = '".md5($pwd)."' AND wu.testAssegnato = wc.id AND wu.stato ='sbloccato' 
             		";
   			$qPwd = mysql_query($cPwd);
@@ -20,7 +20,8 @@ switch ($st) {
     		{
     			while($row = mysql_fetch_array($qPwd))
       			{
-                  $dati["utente"] = array($row["cognome"], $row["nome"], $row["titolo"]);
+                  $dati["utente"] = array($row["idUtente"], $row["cognome"], $row["nome"]);
+                  $dati["test"] = array($row["titolo"]);
                   $dati["statoAccount"]= array($row["stato"]);
       			}
 			}

@@ -1,19 +1,15 @@
- <?php
+<?php
  
  		require ("connessione.php");
- 		$IDomanda = $_POST["id_domanda"];
-        $testAbilitatoUtente = $_POST["testAbilitatoUtente"];
+ 		$IDomanda =$_POST["id_domanda"];
+        $IDcategoria =$_POST["id_categoria"];
+        $IDutente =$_POST["id_utente"];
 
                     $sql = " SELECT
-w.id, w.fk_categoria, w.r1,w.r2,w.r3,w.r4,w.tipoDom, r.fk_domanda,r.risposta, r.commento
+w.id, w.fk_categoria, w.r1,w.r2,w.r3,w.r4,w.tipoDom, r.fk_domanda,r.risposta, r.commento, r.fk_utente
 FROM _webquiz w
     LEFT OUTER JOIN _webquizRisp r
-        ON w.id = r.fk_domanda WHERE w.id = '$IDomanda' and w.fk_categoria = '$testAbilitatoUtente'";
-        
-           
-        
-        
-        
+        ON w.id = r.fk_domanda WHERE w.id = '$IDomanda' AND w.fk_categoria = '$IDcategoria' ";
         
     	$ris = mysql_query($sql) or die("errore esecuzione query");
         $dati = array();
@@ -21,9 +17,15 @@ FROM _webquiz w
         while($row = mysql_fetch_array($ris))
         {
         	//$dati['risposte'] = array($row["id"]."_".$row["r1"],$row["id"]."_".$row["r2"], $row["id"]."_".$row["r3"],$row["id"]."_".$row["r4"]);
-           	$dati['rispDate'] = array($row["fk_domanda"], $row["risposta"]);
+           if($row["risposta"]==null){
+           		$dati['rispDate'] = array("");
+                }
+                else
+                {
+                	$dati['rispDate'] = array($row["risposta"]);
+                }
 			$dati['risposte'] = array($row["r1"],$row["r2"], $row["r3"],$row["r4"]);
-			$dati['infoDom'] = array($row["id"],$row["commento"],$row["tipoDom"]);
+			$dati['infoDom'] = array($row["id"],$row["fk_categoria"],$row["commento"],$row["tipoDom"]);
 
            /*$risp[] =  $row["r1"];
            $risp[] =  $row["r2"];
@@ -35,3 +37,7 @@ FROM _webquiz w
         shuffle($dati['risposte']);
         print_r(json_encode($dati));
       ?>
+
+
+      
+      

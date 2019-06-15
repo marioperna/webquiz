@@ -1,6 +1,6 @@
 <head>
 <meta charset="ISO-8859-1">
-<title>Clock-In</title>
+<title>Ajax Webquiz</title>
 <link rel="stylesheet" href="_stile.css" type="text/css">
 <style type="text/css">
 div#container {
