@@ -14,11 +14,11 @@ if(!empty($rispUtente))
   INSERT INTO _webquizRisp (fk_domanda,risposta,commento)
   VALUES ('$IDomanda','$rispUtente','')
   ON DUPLICATE KEY UPDATE risposta = '$rispUtente';
-
+  
   ";
-
+  
   $q = mysql_query($sqlInserisciRisposta) or die("errore esecuzione query".mysql_error());
-
+  
   if($q)
   {
     $esito["stato"] = "eseguito";
@@ -36,11 +36,11 @@ else if (isset($c))
   INSERT INTO _webquizRisp (fk_domanda,risposta,commento)
   VALUES ('$IDomanda','$rispUtente','$c')
   ON DUPLICATE KEY UPDATE commento = '$c';
-
+  
   ";
-
+  
   $q = mysql_query($sqlInserisciCommento) or die("errore esecuzione query".mysql_error());
-
+  
   if($q)
   {
     $esito["stato"] = "eseguito";
