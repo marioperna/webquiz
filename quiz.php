@@ -2,12 +2,13 @@
  
  		require ("connessione.php");
  		$IDomanda = $_POST["id_domanda"];
+        $testAbilitatoUtente = $_POST["testAbilitatoUtente"];
 
                     $sql = " SELECT
-w.id, w.r1,w.r2,w.r3,w.r4,w.tipoDom, r.fk_domanda,r.risposta, r.commento
+w.id, w.fk_categoria, w.r1,w.r2,w.r3,w.r4,w.tipoDom, r.fk_domanda,r.risposta, r.commento
 FROM _webquiz w
     LEFT OUTER JOIN _webquizRisp r
-        ON w.id = r.fk_domanda WHERE w.id = '$IDomanda'";
+        ON w.id = r.fk_domanda WHERE w.id = '$IDomanda' and w.fk_categoria = '$testAbilitatoUtente'";
         
            
         
