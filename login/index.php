@@ -32,10 +32,10 @@ window.onload=function()
 		setTimeout('myWin.focus()',200)
 		window.blur()
 	}
-	
+
 //	la chiusura di questa finestra chiude anche 'webquiz'
-	window.onunload=function() { myWin.close()} 
-}  
+	window.onunload=function() { myWin.close()}
+}
 
 
 

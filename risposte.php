@@ -44,8 +44,8 @@ switch ($cmd) {
           }
           print_r(json_encode($esito));
           break;
-    
-    
+
+
     default:
     	  $sqlInserisciRisposta =
           "
