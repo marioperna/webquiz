@@ -199,7 +199,6 @@ metti il video in full screen digitando il tasto &lt;F11&gt;
 <div id="container_domande">
 <?php
 require("../connessione.php");
-
 $sql = "SELECT id, domanda, fk_categoria FROM _webquiz ORDER BY rand()";
 $ris = mysql_query($sql) or die("errore esecuzione query");
 
@@ -220,6 +219,8 @@ echo "
 <input type="hidden" id="idDom" name="idDom" value="">
 <input type="hidden" id="idCat" name="idCat" value="">
 <input type="hidden" id="idUtente" name="idUtente" value="">
+<input type="hidden" id="tipoDom" name="tipoDom" value="">
+
 <div id="areaScrivibile"> 
 <textarea rows="4" cols="50" id="commento" onfocusout="inserisciCommento()"></textarea>
 
@@ -230,6 +231,32 @@ echo "
 </div>
 
 <script type="text/javascript">
+function setCookie(cname, cvalue, exdays) {
+  var d = new Date();
+  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+  var expires = "expires="+ d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+
+
+
+
 
 $("#r1").hide();
 $("#commento").hide();
@@ -242,21 +269,24 @@ $("#commento").hide();
 function inserisciCommento()
 {
 
-	
+	var tipoDom = $("#tipoDom").val();
+    
       var idDom = $("#idDom").val();
       var idCat = $("#idCat").val();
-      var idUtente = $("#idUtente").val();
+      var idUtente = getCookie("userId");
 		var commento = $('#commento').val();  
+        	var domAperta = $('#domAperta').val();  
         
-
+if(tipoDom =="a")
+{
             $.ajax({
             type: "POST",
             url: "../risposte.php",
-            data: {id_utente: idUtente, id_domanda: idDom, id_categoria: idCat, commento:commento, cmd:"scrivi"},
+            data: {id_utente: idUtente, id_domanda: idDom, id_categoria: idCat, commento:domAperta, cmd:"ida"},
             dataType: "JSON",
             success: function(esito)
             {
-            		//alert("salvato");
+            		alert("salvato");
                     
                    
             },
@@ -268,27 +298,54 @@ function inserisciCommento()
           //fine chiamata ajax  
           $("#statoScrittura").text("Salvataggio dati: OK");
 }
+else
+{
+	            $.ajax({
+            type: "POST",
+            url: "../risposte.php",
+            data: {id_utente: idUtente, id_domanda: idDom, id_categoria: idCat, commento:commento},
+            dataType: "JSON",
+            success: function(esito)
+            {
+            		alert("salvato");
+                    
+                   
+            },
+            error: function()
+            {
+
+            }
+          });
+}
+
+
+}
 function leggiDom(a,b)
 {
+   
+           var idUtente = getCookie("userId");
 
 $.ajax
 ({
 type: "POST",
 url: "../quiz.php",
-data: {id_domanda: a, id_categoria: b},
+data: {id_domanda: a, id_categoria: b, id_utente: idUtente},
 dataType: "JSON",
 success: function(dati)
 {
+	
+	$("#idDom").val(dati.infoDom[0]);
+    $("#tipoDom").val(dati.infoDom[2]);
+	$("#idCat").val(dati.infoDom[1]);
+    $("#idUtente").val(dati.infoAccount[0]);
 	$("#statoScrittura").text("");
-$("#idDom").val(dati.infoDom[0]);
-$("#idCat").val(dati.infoDom[1]);
-
-if(dati.infoDom[3]=="a")
+if(dati.infoDom[2]=="a")
 {
 //alert(dati.infoDom[2]);
 // alert(a);
 $("#commento").val("");
 $("#domAperta").show();
+$("#domAperta").val(dati.rispDate[1]);
 $("#r1").css("display","none");
 $("#r2").css("display","none");
 $("#r3").css("display","none");
@@ -299,7 +356,7 @@ $("#lab_r2").css("display","none");
 $("#lab_r3").css("display","none");
 $("#lab_r4").css("display","none");
 }
-if(dati.infoDom[3]=="sm")
+if(dati.infoDom[2]=="sm")
 {
 $("#commento").val("");
 $("#domAperta").css("display","none");
@@ -393,13 +450,15 @@ if(dati.risposte[3]== rispDate[3])
 {$("#r4").prop('checked', true);}
 //fine controllo se selezionata la risposta 4
 //alert(dati.infoDom[1]);
-if(dati.infoDom[2]){
-	$("#commento").val(dati.infoDom[2]);
+if(dati.rispDate[1])
+{
+	$("#commento").val(dati.rispDate[1]);
 }
 else
 {
 $("#commento").val("");
 }
+
 }
 },
 error: function()
@@ -435,7 +494,7 @@ dataType: "JSON",
 success: function(dati){
 //se il codice passato nella sql della pagina php ritorna true allora mostro i dati relativi all'utente associato al qr
 //formatto il contenuto con css e imposto gli effetti grafici di pagina in caso di successo
-
+ //$("#idUtente").val(dati.utente[0]);
 /*----FUNZIONE DEL BLOCCO TASTO DX   
 $(document).bind("contextmenu",function(e){
 
@@ -445,8 +504,11 @@ $("#alert").fadeOut(2500);
 return false;
 });
 -----------*/
+
+var x = setCookie("userId",dati.utente[0],1);
+/* --------------- */
+
 if(dati.statoAccount[0]=="sbloccato"){
-alert("tutto ok");
 /* -------- riconosce il rimpicciolimento della pagina ------- */
 $( window ).resize(function() {    
 sospensioneTimbratura();
@@ -457,9 +519,6 @@ $("#container").css({"display": "none"});
 $("#pannel").css({"display": "block"});
 $("#infoAzienda").html("Connesso come: <b>"+dati.utente[1]+" "+dati.utente[2]+"</b>");
 $("#infoTest").html("Argomento Prova <b>["+dati.test[0]+"]</b>");
-$("#idUtente").val(dati.utente[0]);
-
-
 }
 else
 {
@@ -531,7 +590,7 @@ if (this.checked)
 
       var idDom = $("#idDom").val();
       var idCat = $("#idCat").val();
-      var idUtente = $("#idUtente").val();
+      var idUtente = getCookie("userId");
       //alert(output);
       // effettua l'alert del id domanda solo se la checkbox è stata flaggata
       //alert(domCliccata);
@@ -561,7 +620,7 @@ return n.value;
 }).join(',');
 var idDom = $("#idDom").val();
 var idCat = $("#idCat").val();
-var idUtente = $("#idUtente").val();
+      var idUtente = getCookie("userId");
 
 //var rispCancUtente = $(this).val();
 //var rispCancUtScomposta = rispCancUtente.split("_");

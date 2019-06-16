@@ -25,12 +25,33 @@ switch ($cmd) {
           }
           print_r(json_encode($esito));
         break;
+        case "ida":
+    	  $sqlInserisciRisposta =
+          "
+          INSERT INTO _webquizRisp (fk_utente, fk_categoria, fk_domanda,dataRisposta,risposta, commento)
+          VALUES ('$IDutente','$IDcategoria','$IDomanda',CURDATE(),'', '$c')
+          ON DUPLICATE KEY UPDATE commento = '$c'
+
+          ";
+
+          $q = mysql_query($sqlInserisciRisposta) or die("errore esecuzione query".mysql_error());
+
+          if($q)
+          {$esito["stato"] = "eseguito";}
+          else
+          {
+            $esito["stato"] = "non eseguito";
+          }
+          print_r(json_encode($esito));
+          break;
+    
+    
     default:
     	  $sqlInserisciRisposta =
           "
           INSERT INTO _webquizRisp (fk_utente, fk_categoria, fk_domanda,dataRisposta, risposta, commento)
           VALUES ('$IDutente','$IDcategoria','$IDomanda',CURDATE(),'$rispUtente', '$c')
-          ON DUPLICATE KEY UPDATE risposta = '$rispUtente', commento='$c'
+          ON DUPLICATE KEY UPDATE risposta = '$rispUtente', commento = '$c'
 
           ";
 
