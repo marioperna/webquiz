@@ -1,0 +1,136 @@
+ *  { 
+	font-family:			tahoma; 
+	font-size:				12px;
+	color:					darkblue;
+	padding:				0px;
+	margin:		   			0px;
+}
+body  { 
+	background-color: 		gray;
+	text-align:				center;
+}
+div#boxContainer {
+	width:					1200px;
+	margin:					0px auto;
+	text-align:				left;
+}
+div#boxSX {
+	width:					600px;
+	overflow:				auto;
+	float:					left;
+	visibility:				hidden;
+	background-color:		rgb(245,245,245);
+}
+div#boxDX {
+	width:					597px;
+	overflow:				auto;
+	float:					right;
+	visibility:				hidden;
+	background-color:		rgb(245,245,245);
+}
+table {
+	width:					100%;
+	margin:					0px;
+	padding:				5px;
+	background-color:		rgb(245,245,245);
+}
+table#testata {
+	margin:					3px 0px;
+	background:				url(logoiisPascal.png) no-repeat 3px 1px rgb(245,245,245);
+	background-size:		58px 54px;
+	padding-left:			65px;
+}	
+table#tempo {
+	border-bottom:			3px solid gray;
+	clear:					both;
+}	
+td#verifica {
+	text-align:				left;
+	padding:				4px;
+}	
+td#termina {
+	padding:				0px;
+	margin:					0px;
+	text-align:				right;
+}	
+td.tempo {
+	text-align:				center;
+	vertical-align:			middle;
+	font-size:				1.2em;
+	font-weight:			bold;
+	min-width:				125px;
+}	
+table#domande  div {
+	min-height:				24px; 
+	min-width:				20px;
+	margin:					0px;
+	padding:				0px;
+}
+table#domande  td {
+	vertical-align:			top;
+	text-align:				left;
+	padding:				2px 5px;
+	cursor:					pointer;
+}	
+table#domande  input {
+	cursor:					pointer;
+}	
+div#risposte  {
+	visibility:				visible;
+}
+img#progressbar {
+	margin-top:				60px;
+	margin-left:			120px;
+}
+div#risposte div {
+	text-align:				left;
+	padding:				10px;
+	cursor:					pointer;
+}
+div#alert  {
+	position:				absolute;
+	display:				none;
+	width:					80.5%;
+	color:					white;
+	background-color:		red;
+	font-size:				1.4em;
+	font-weight:			bold;
+	text-align:				center;
+	padding:				50px;
+	border-radius:			6px;
+	border-style:			ridge;
+    margin-left: 			5%;
+    margin-top:				5%
+
+}
+td.mouseOver { color: darkblue  }
+td.mouseOut   { color: lightgray }
+input#btnFine {
+	width:					100px;
+	height:					30px; 
+	cursor:					pointer;
+}	
+textarea#r {
+/*	width:					420px;	*/
+	width:					94%;
+	height:					160px;	
+	padding:				10px;
+	cursor:					auto;
+	margin:					10px auto;
+}
+select#selectStudenti {
+	width:					90%;
+	height:					40px;
+	padding:				10px;
+	cursor:					auto;
+	margin:					0 auto;
+	margin-top:				20px;
+}
+iframe {
+	display:				none; 
+	position:				absolute; 
+	top:					62px;
+	left:					3px;
+	z-index:				1;
+	background-color:		white;
+}
