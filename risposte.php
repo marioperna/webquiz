@@ -1,11 +1,13 @@
 <?php
 require("connessione.php");
-$IDomanda = $_POST["id_domanda"];
-$rispUtente = $_POST["prova"];
-$IDcategoria =$_POST["id_categoria"];
+$IDomanda =  $_POST["id_domanda"];
+
+//controlla la funzione addslashes se va bene qui sotto
+$rispUtente = addslashes($_POST["prova"]);
+$IDcategoria = $_POST["id_categoria"];
 $IDutente = $_POST["id_utente"];
-$c = $_POST["commento"];
-$cmd = $_POST["cmd"];
+$c = stripslashes($_POST["commento"]);
+$cmd =  stripslashes($_POST["cmd"]);
 
 switch ($cmd) {
     case "cancellaRisposta":

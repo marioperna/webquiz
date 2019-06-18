@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
+<meta charset="UTF-8">
 <title>_webquiz Ajax</title>
+
 <link rel="stylesheet" href="_stile.css" type="text/css">
 <script type="text/javascript" src="_codice.js?1.18.7"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -270,12 +271,11 @@ function inserisciCommento()
 {
 
 	var tipoDom = $("#tipoDom").val();
-    
-      var idDom = $("#idDom").val();
-      var idCat = $("#idCat").val();
-      var idUtente = getCookie("userId");
-		var commento = $('#commento').val();  
-        	var domAperta = $('#domAperta').val();  
+    var idDom = $("#idDom").val();
+    var idCat = $("#idCat").val();
+    var idUtente = getCookie("userId");
+	var commento = $('#commento').val();  
+    var domAperta = $('#domAperta').val();  
         
 if(tipoDom =="a")
 {
@@ -286,7 +286,7 @@ if(tipoDom =="a")
             dataType: "JSON",
             success: function(esito)
             {
-            		alert("salvato");
+            		$("#statoScrittura").text("Salvataggio dati: OK");
                     
                    
             },
@@ -296,7 +296,7 @@ if(tipoDom =="a")
             }
           });
           //fine chiamata ajax  
-          $("#statoScrittura").text("Salvataggio dati: OK");
+          
 }
 else
 {
@@ -307,7 +307,7 @@ else
             dataType: "JSON",
             success: function(esito)
             {
-            		alert("salvato");
+            		$("#statoScrittura").text("Salvataggio dati: OK");
                     
                    
             },
@@ -495,7 +495,7 @@ success: function(dati){
 //se il codice passato nella sql della pagina php ritorna true allora mostro i dati relativi all'utente associato al qr
 //formatto il contenuto con css e imposto gli effetti grafici di pagina in caso di successo
  //$("#idUtente").val(dati.utente[0]);
-/*----FUNZIONE DEL BLOCCO TASTO DX   
+/*----FUNZIONE DEL BLOCCO TASTO DX  ----*/
 $(document).bind("contextmenu",function(e){
 
 $("#alert").css({"display": "block"}); 
@@ -503,7 +503,7 @@ $("#alert").text("l'utilizzo del tasto destro è disabilitato") //alert("timbrat
 $("#alert").fadeOut(2500);
 return false;
 });
------------*/
+
 
 var x = setCookie("userId",dati.utente[0],1);
 /* --------------- */
@@ -621,27 +621,53 @@ return n.value;
 var idDom = $("#idDom").val();
 var idCat = $("#idCat").val();
       var idUtente = getCookie("userId");
+	var risposteUtente= output.split(",");
+    
+    if(risposteUtente=="")
+    {
+      //inizio chiamata ajax
+      $.ajax({
+      type: "POST",
+      url: "../risposte.php",
+      data: {id_utente:idUtente, id_domanda: idDom, prova:output, id_categoria:idCat, cmd:"cancellaRisposta"},
+      dataType: "JSON",
+      success: function(esito)
+      {
 
+      //alert("operazione eseguita con successo");
+
+      },
+      error: function()
+      {
+      alert("Chiamata fallita, si prega di riprovare...");
+      }
+      });
+      //fine chiamata ajax    
+      }
+    else
+    {
+      //inizio chiamata ajax
+      $.ajax({
+      type: "POST",
+      url: "../risposte.php",
+      data: {id_utente:idUtente, id_domanda: idDom, prova:output, id_categoria:idCat},
+      dataType: "JSON",
+      success: function(esito)
+      {
+
+      //alert("operazione eseguita con successo");
+
+      },
+      error: function()
+      {
+      alert("Chiamata fallita, si prega di riprovare...");
+      }
+      });
+      //fine chiamata ajax
+    }
 //var rispCancUtente = $(this).val();
 //var rispCancUtScomposta = rispCancUtente.split("_");
-//inizio chiamata ajax
-$.ajax({
-type: "POST",
-url: "../risposte.php",
-data: {id_utente:idUtente, id_domanda: idDom, prova:output, id_categoria:idCat, cmd:"cancellaRisposta"},
-dataType: "JSON",
-success: function(esito)
-{
 
-//alert("operazione eseguita con successo");
-
-},
-error: function()
-{
-alert("Chiamata fallita, si prega di riprovare...");
-}
-});
-//fine chiamata ajax
 }
 });
 });
