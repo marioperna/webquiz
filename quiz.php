@@ -1,9 +1,9 @@
 <?php
  header('Content-Type: application/json; charset=utf-8');
-
+ 
  		require ("connessione.php");
                 //aggiunto da me mysql query
-
+      
                 $dati = array();
 
  		$IDomanda = $_POST["id_domanda"];
@@ -23,7 +23,7 @@
 		$ris = mysql_query($sql) or die("errore esecuzione query1");
         $ris2 = mysql_query($sql2) or die("errore esecuzione query2");
         $ris3 = mysql_query($sql3) or die("errore esecuzione query3");
-
+      	
         if(mysql_num_rows($ris2)>=1)
         {
        		 while($row2 = mysql_fetch_array($ris2))
@@ -35,9 +35,9 @@
         {
         	$dati['rispDate']=array("");
         }
-
-
-
+        
+        
+        
          if(mysql_num_rows($ris3)>=1)
         {
        		 while($row3 = mysql_fetch_array($ris3))
@@ -49,18 +49,22 @@
         {
         	$dati['infoAccount']=array("");
         }
-
-
+        
+    
         while($row = mysql_fetch_array($ris))
         {
         	//$dati['risposte'] = array($row["id"]."_".$row["r1"],$row["id"]."_".$row["r2"], $row["id"]."_".$row["r3"],$row["id"]."_".$row["r4"]);
-
+          
 			$dati['risposte'] = array($row["r1"],$row["r2"], $row["r3"],$row["r4"]);
 			$dati['infoDom'] = array($row["id"],$row["fk_categoria"],$row["tipoDom"]);
-        }
+        }        
 
         //inverte le domande
-        shuffle($dati['risposte']);
+        shuffle($dati['risposte']);  
         print_r(json_encode($dati));
 
       ?>
+
+
+      
+      

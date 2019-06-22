@@ -1,4 +1,4 @@
-var versione='v1.18.7 (timbrature funzionanti)';
+var versione='v1.18.7 (risposte e controlli funzionanti)';
 // controlla se lo schermo è stato messo in full screen con <F11>
 function schermoMassimizzato(pWin)
 {

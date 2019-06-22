@@ -196,21 +196,11 @@ metti il video in full screen digitando il tasto &lt;F11&gt;
 
 <div id="pannel">
 <div id="infoAzienda"></div>
+<div class="countdown"></div>
+<span id="time"></span> 
 <div id="infoTest"></div>
 <div id="container_domande">
-<?php
-require("../connessione.php");
-$sql = "SELECT id, domanda, fk_categoria FROM _webquiz ORDER BY rand()";
-$ris = mysql_query($sql) or die("errore esecuzione query");
 
-while($row = mysql_fetch_array($ris))
-{
-echo "
-<a href=javascript:void(0); id=".$row["id"]." class='domanda' OnClick=\"leggiDom('".$row["id"]."','".$row["fk_categoria"]."')\">".$row["domanda"]."</a>
-<hr/>";        
-}
-
-?>
 </div>
 <div id="mostraRisposte">
 <input type="checkbox" name="r[]" id="r1" value=""><label id="lab_r1"></label> <br>
@@ -232,11 +222,39 @@ echo "
 </div>
 
 <script type="text/javascript">
-function setCookie(cname, cvalue, exdays) {
-  var d = new Date();
-  d.setTime(d.getTime() + (exdays*24*60*60*1000));
-  var expires = "expires="+ d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+function logout()
+{
+   var idUtente = getCookie("userId");
+   $('.attesa').show();
+$.ajax
+({
+// definisco il tipo della chiamata
+type: "POST",
+// specifico la URL della risorsa da contattare
+url: "controller/pwdController.php",
+// passo dei dati alla risorsa remota
+data: {id_utente:idUtente, stato:"provaTerminata"},
+// definisco il formato  della risposta
+dataType: "JSON",
+// imposto un'azione per il caso di successo
+success: function(dati){
+//se il codice passato nella sql della pagina php ritorna true allora mostro i dati relativi all'utente associato al qr
+//formatto il contenuto con css e imposto gli effetti grafici di pagina in caso di successo 
+
+    location.reload();
+
+//
+},
+// ed una per il caso di fallimento
+error: function()
+{
+
+}
+});
+
+}
+function setCookie(cname, cvalue) {
+ 	document.cookie = cname + "=" + cvalue + ";path=/";
 }
 function getCookie(cname) {
   var name = cname + "=";
@@ -261,11 +279,38 @@ function getCookie(cname) {
 
 $("#r1").hide();
 $("#commento").hide();
+
 $("#r2").hide();
 $("#r3").hide();
 $("#r4").hide();
 $("#domAperta").hide();
 $("#commento").hide();
+function contaTest(a)
+{
+function startTimer(duration, display) {
+    var timer = duration, minutes, seconds;
+    setInterval(function () {
+        minutes = parseInt(timer / 60, 10)
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.text(minutes + ":" + seconds);
+
+        if (--timer < 0) {
+            logout();
+        }
+    }, 1000);
+}
+
+jQuery(function ($) {
+    var fiveMinutes = 60 * a,
+        display = $('#time');
+    startTimer(fiveMinutes, display);
+});
+}
+
 
 function inserisciCommento()
 {
@@ -281,7 +326,7 @@ if(tipoDom =="a")
 {
             $.ajax({
             type: "POST",
-            url: "../risposte.php",
+            url: "risposte.php",
             data: {id_utente: idUtente, id_domanda: idDom, id_categoria: idCat, commento:domAperta, cmd:"ida"},
             dataType: "JSON",
             success: function(esito)
@@ -300,10 +345,10 @@ if(tipoDom =="a")
 }
 else
 {
-	            $.ajax({
+            $.ajax({
             type: "POST",
-            url: "../risposte.php",
-            data: {id_utente: idUtente, id_domanda: idDom, id_categoria: idCat, commento:commento},
+            url: "risposte.php",
+            data: {id_utente: idUtente, id_domanda: idDom, id_categoria: idCat, commento:commento, cmd:"commento"},
             dataType: "JSON",
             success: function(esito)
             {
@@ -316,6 +361,7 @@ else
 
             }
           });
+          //fine chiamata ajax  
 }
 
 
@@ -328,7 +374,7 @@ function leggiDom(a,b)
 $.ajax
 ({
 type: "POST",
-url: "../quiz.php",
+url: "quiz.php",
 data: {id_domanda: a, id_categoria: b, id_utente: idUtente},
 dataType: "JSON",
 success: function(dati)
@@ -495,34 +541,58 @@ success: function(dati){
 //se il codice passato nella sql della pagina php ritorna true allora mostro i dati relativi all'utente associato al qr
 //formatto il contenuto con css e imposto gli effetti grafici di pagina in caso di successo
  //$("#idUtente").val(dati.utente[0]);
-/*----FUNZIONE DEL BLOCCO TASTO DX  ----*/
-$(document).bind("contextmenu",function(e){
 
-$("#alert").css({"display": "block"}); 
-$("#alert").text("l'utilizzo del tasto destro è disabilitato") //alert("timbratura sospesa :: "+datiTimbratore.dataOra+" :: effettuare nuovamente il Check-In");  
-$("#alert").fadeOut(2500);
-return false;
-});
-
-
-var x = setCookie("userId",dati.utente[0],1);
-/* --------------- */
 
 if(dati.statoAccount[0]=="sbloccato"){
-/* -------- riconosce il rimpicciolimento della pagina ------- */
-$( window ).resize(function() {    
-sospensioneTimbratura();
-});
-/*------------ - - - - - - - - - - - - - - - - ---------------------------------*/
-$("#gruppoLogin").css({"display": "none"});
-$("#container").css({"display": "none"});
-$("#pannel").css({"display": "block"});
-$("#infoAzienda").html("Connesso come: <b>"+dati.utente[1]+" "+dati.utente[2]+"</b>");
-$("#infoTest").html("Argomento Prova <b>["+dati.test[0]+"]</b>");
+	 setCookie("userId", dati.utente[0]);
+      //inizio chimaata ajax
+      $.ajax({
+          type: "POST",
+          url: "getDomande.php",
+          data: {id_utente: dati.utente[0], testAssegnato: dati.utente[1] },
+          dataType: "JSON",
+          success: function(datiDom)
+          {
+          	for(var i=0; i<datiDom.length;i++)
+            {
+            	$("#container_domande").append("<a href=javascript:void(0); id="+datiDom[i][0]+" class='domanda' OnClick='leggiDom("+datiDom[i][0]+","+datiDom[i][1]+")'>"+datiDom[i][2]+"</a><br><br><br><hr>");
+            }
+          	
+          },
+          error: function()
+          {
+          alert("Chiamata fallita, 2wsi prega di riprovare...");
+          }
+      });
+      //fine chiamata ajax
+        /* -------- riconosce il rimpicciolimento della pagina ------- */
+        $( window ).resize(function() {    
+        sospendiTest();
+        });
+        /*------------ - - - - - - - - - - - - - - - - ---------------------------------*/
+        $("#gruppoLogin").css({"display": "none"});
+        $("#container").css({"display": "none"});
+        $("#pannel").css({"display": "block"});
+        $("#infoAzienda").html("Connesso come: <b>"+dati.utente[2]+" "+dati.utente[3]+"</b>");
+        $("#infoTest").html("Argomento Prova <b>["+dati.test[0]+"]</b>");
+        $("#infoTest").append("<input type='button' value='Termina Prova' onclick='logout()'>");
+       	//alert(dati.test[1]);
+       //$("#time").html(dati.test[1]);
+			contaTest(dati.test[1]);
+
+        /*----FUNZIONE DEL BLOCCO TASTO DX  ----*/
+          $(document).bind("contextmenu",function(e){
+          $("#alert").css({"display": "block"}); 
+          $("#alert").text("l'utilizzo del tasto destro è disabilitato") //alert("timbratura sospesa :: "+datiTimbratore.dataOra+" :: effettuare nuovamente il Check-In");  
+          $("#alert").fadeOut(2500);
+          return false;
+          });
+
 }
 else
 {
-$("#errore").text("errore password o postazione non attiva - riprovare, prego...");  	
+	
+$("#errore").html("errore password o postazione non attiva - riprovare, prego...");  	
 
 }
 
@@ -536,33 +606,27 @@ alert("Errore #AJ02 chiamata");
 }   
 
 /* da qui in poi*/
-function sospensioneTimbratura()
+function sospendiTest()
 {
-var ct = $("#codiceTimbratore").text();
-$('.attesa').show();
+   var idUtente = getCookie("userId");
+   $('.attesa').show();
 $.ajax
 ({
 // definisco il tipo della chiamata
 type: "POST",
 // specifico la URL della risorsa da contattare
-url: "app/verifica/pwdController.php",
+url: "controller/pwdController.php",
 // passo dei dati alla risorsa remota
-data: {codiceTimbratore:ct, stato:"sospTmb"},
+data: {id_utente:idUtente, stato:"sospTest"},
 // definisco il formato  della risposta
 dataType: "JSON",
 // imposto un'azione per il caso di successo
-success: function(datiTimbratore){
+success: function(dati){
 //se il codice passato nella sql della pagina php ritorna true allora mostro i dati relativi all'utente associato al qr
 //formatto il contenuto con css e imposto gli effetti grafici di pagina in caso di successo 
-//alert("bloccato1");
-if(datiTimbratore.stato == "bloccato")
+if(dati.statoAccount[0] == "bloccato")
 {
-//alert("bloccato2");
-//$("#container").css({"display": "none"}); 
-$("#container").css({"display": "none"}); 
-$("#alert").css({"display": "block"}); 
-$("#alert").text("timbratura sospesa"); 
-
+	$("#pannel").css({"display": "none"}); 
 }
 
 setTimeout(location.reload.bind(location), 950);
@@ -599,7 +663,7 @@ if (this.checked)
       //inizio chimaata ajax
       $.ajax({
           type: "POST",
-          url: "../risposte.php",
+          url: "risposte.php",
           data: {id_utente:idUtente, id_domanda: idDom, prova:output, id_categoria:idCat },
           dataType: "JSON",
           success: function(esito)
@@ -628,7 +692,7 @@ var idCat = $("#idCat").val();
       //inizio chiamata ajax
       $.ajax({
       type: "POST",
-      url: "../risposte.php",
+      url: "risposte.php",
       data: {id_utente:idUtente, id_domanda: idDom, prova:output, id_categoria:idCat, cmd:"cancellaRisposta"},
       dataType: "JSON",
       success: function(esito)
@@ -649,7 +713,7 @@ var idCat = $("#idCat").val();
       //inizio chiamata ajax
       $.ajax({
       type: "POST",
-      url: "../risposte.php",
+      url: "risposte.php",
       data: {id_utente:idUtente, id_domanda: idDom, prova:output, id_categoria:idCat},
       dataType: "JSON",
       success: function(esito)
@@ -688,7 +752,7 @@ if( typeof( window.outerHeight ) != 'number' )
 document.getElementById('avviso').innerHTML=
 'questa procedura non funziona sui browser che non supportano la proprietà outerHeight <br>(IE8 e precedenti)'
 else	
-if (window.opener==null || window.opener.myWin==null || window.opener.myWin.name != 'clessidraweb')
+if (window.opener==null || window.opener.myWin==null || window.opener.myWin.name != 'webquiz')
 document.getElementById('avviso').innerHTML='attivazione errata'
 else
 controlla();	
